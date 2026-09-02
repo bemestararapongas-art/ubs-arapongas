@@ -1,9 +1,8 @@
 'use client'
 
-import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import type { FormEvent, ReactNode } from 'react'
 import { createClient } from '@/lib/supabase'
-
-const supabase = createClient()
 
 const ages = ['Criança — até 12 anos','Adolescente — 13 a 17 anos','Adulto — 18 a 59 anos','Pessoa idosa — 60 anos ou mais']
 const services = ['Consulta agendada','Consulta de pré-natal','Atendimento por livre demanda','Atendimento de enfermagem','Renovação de receita','Vacinação']
@@ -46,6 +45,7 @@ export default function Home(){
   const [rows,setRows]=useState<any[]>([])
   const [loading,setLoading]=useState(false)
   const [filters,setFilters]=useState({age:'',service:'',professional:'',rating:'',from:'',to:''})
+  const supabase = useMemo(() => createClient(), [])
 
   useEffect(()=>{ supabase.auth.getSession().then(({data})=>{ if(data.session && mode==='login') setMode('dashboard') }) },[mode])
 
@@ -144,7 +144,7 @@ export default function Home(){
 }
 
 function Header(){return <div className="topbar" style={{marginBottom:0}}><div className="brand"><div className="brand-mark">UA</div><div><div style={{fontWeight:850}}>UBS Arapongas</div><div className="muted small">Araranguá — SC</div></div></div></div>}
-function Step({title,children}:{title:string,children:React.ReactNode}){return <section className="step active"><h2 className="question">{title}</h2><div style={{marginTop:18}}>{children}</div></section>}
+function Step({title,children}:{title:string,children:ReactNode}){return <section className="step active"><h2 className="question">{title}</h2><div style={{marginTop:18}}>{children}</div></section>}
 function Radio({label,checked,onClick}:{label:string;checked:boolean;onClick:()=>void}){return <label className="option"><input type="radio" checked={checked} onChange={onClick}/><span>{label}</span></label>}
 function Check({label,checked,onClick}:{label:string;checked:boolean;onClick:()=>void}){return <label className="option"><input type="checkbox" checked={checked} onChange={onClick}/><span>{label}</span></label>}
 function ConditionalText({label,value,onChange}:{label:string;value:string;onChange:(v:string)=>void}){return <div className="conditional"><div className="field" style={{marginTop:0}}><label>{label}</label><textarea className="textarea" value={value} onChange={e=>onChange(e.target.value)}/></div></div>}
